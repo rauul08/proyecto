@@ -1,0 +1,120 @@
+*{
+    margin-right: 0px;
+}
+body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    list-style: none;
+    text-decoration: none;
+    overflow-x: hidden;
+}
+
+#conteiner {
+    position: relative;
+    background-color: #FFE1DE;
+}
+
+.nav-item {
+        display: flex;
+        margin: 0 auto;
+        max-width: 100%;
+        justify-content: center;
+        align-items: center;
+
+}
+
+.nav-link svg {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+}
+
+.nav-link {
+    color: white;
+    text-decoration: none;
+    margin-left: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.fondo {
+display:flex;
+justify-content: space-between;
+height: 60px;
+margin-top: 0px;
+background-color: #FFE1DE;
+
+}
+
+
+
+.return {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    text-decoration: none;
+    
+}
+
+#logo {
+    max-height: 100%;
+    height: 40px; /* O puedes usar max-height: 60px; para asegurar que se mantenga dentro del navbar */
+    width: auto;
+    margin-top:4px;
+}
+
+.busqueda {
+    display: flex;
+    margin: 0 auto;
+    max-width: 100%;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+}
+
+
+.row{
+    height: 84vh;
+}
+
+.ground-color{
+    background-color: #FFA500;
+    width:100%;
+    border-radius: 20px;
+    padding: 10px;
+}
+
+
+.lead {
+    font-family: 'Onest Variable', sans-serif;
+    text-align: justify;
+}
+
+
+
+
+
+
+ /* Estilos generales para el footer */
+ footer {
+    background-color: #be1622; /* Color de fondo rojo */
+    color: #fff; /* Color del texto blanco */
+    text-align: center; /* Centrar el texto */
+ /* Espaciado arriba y abajo */
+    width: 100%; /* Ocupa todo el ancho de la pantalla */
+    z-index: 0;
+    padding-top: 20px;
+    padding-left: 0px;
+    font-size: 18px;
+}
+.footer-line {
+    display: inline-block; /* Línea blanca solo del ancho del texto */
+    border-top: 2px solid #fff; /* Línea blanca encima del texto */
+    padding: 10px 0; /* Espaciado arriba y abajo de la línea */
+    font-family: 'Fugaz One', sans-serif;
+    text-align: center;
+}
+
+

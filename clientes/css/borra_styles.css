@@ -1,0 +1,114 @@
+body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    list-style: none;
+    text-decoration: none;
+    }
+    .conteiner {
+        position:relative;
+    }
+  
+    #sidebar {
+        width: 200px;
+        height: 100%;
+        background-color: #333;
+        position: fixed;
+        left: -200px; /* La barra lateral estará inicialmente fuera de la vista */
+        transition: left 0.3s ease; /* Añade una transición para suavizar el movimiento */
+    }
+    
+    #container.shift {
+        margin-left: 200px; /* Ajusta el margen del contenido principal para dejar espacio para la barra lateral */
+        transition: margin-left 0.3s ease; /* Añade una transición */
+    }
+    
+    
+.sidebar img {
+    width: 100%;
+    margin-bottom:20px;
+    margin-left: 10px;
+}
+
+.secciones {
+    list-style: none;
+    padding: 0;
+    margin:auto;
+    text-align:auto;
+}
+
+.secciones li {
+    margin-bottom: 50px;
+}
+
+.secciones a {
+    color: #8B4513;
+    text-decoration: none;
+    font-size: 30px;
+    font-weight: 600;
+    font-family: 'Anton', sans-serif;
+}
+
+.secciones a:hover {
+   text-decoration: underline;
+
+}
+
+.secciones a:active {
+    background-color: #FFA500;
+    
+}
+
+    .fondo {
+        display:flex;
+    justify-content: center;
+    align-items: flex-start; /* Cambio de align-items */
+    height: 60px;
+    margin-top: 0px;
+    background-color: #8B4513;
+    position:none !important;
+    }
+
+    
+    .busqueda {
+        display: flex;
+        margin:0 auto;
+        max-width:100%;
+        justify-content:center;
+        align-items:center;
+        position:absolute;
+    }
+    .fas.fa-map-marker-alt {
+        color:#FFE1DE;
+        cursor:pointer;
+        margin-right: 10px;
+    }
+
+    .fas.fa-search {
+        position: absolute;
+            top: 4px;
+            transform: translateY(-1%);
+            right: 10px;
+            color: #000000;
+            cursor: pointer;
+        
+
+    }
+    #seeker {
+        width: 280px;
+        font-family: Arial, sans-serif;
+        font-size: 13px;
+        padding: 5px 10px;
+        background-color: #FFE1DE;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        
+        
+
+    }
+    input[type="search"]::placeholder {
+        max-width: 100%;
+        font-family: 'Anton', sans-serif;
+        font-size: 14px;
+        font-style: italic;
+    }
