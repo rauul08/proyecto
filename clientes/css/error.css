@@ -1,0 +1,278 @@
+/* Estilos para la página de errores */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+}
+
+.error-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 20px;
+    position: relative;
+    z-index: 10;
+}
+
+.error-content {
+    background: rgba(255, 255, 255, 0.98);
+    border-radius: 20px;
+    padding: 50px 40px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    position: relative;
+    backdrop-filter: blur(10px);
+}
+
+/* Icono de error */
+.error-icon-wrapper {
+    margin-bottom: 30px;
+}
+
+.error-icon {
+    font-size: 80px;
+    color: #ff6b6b;
+    animation: bounce 1s ease-in-out;
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+/* Título */
+.error-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: #2d3748;
+    margin-bottom: 20px;
+    animation: fadeInUp 0.6s ease-out;
+}
+
+/* Mensaje principal */
+.error-message {
+    font-size: 20px;
+    font-weight: 600;
+    color: #4a5568;
+    margin-bottom: 25px;
+    animation: fadeInUp 0.6s ease-out 0.1s;
+    animation-fill-mode: both;
+}
+
+/* Detalles del error */
+.error-details {
+    background: #f7fafc;
+    border-left: 4px solid #ff6b6b;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+    animation: fadeInUp 0.6s ease-out 0.2s;
+    animation-fill-mode: both;
+}
+
+.error-details p {
+    font-size: 16px;
+    color: #3b64a1;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* Separador */
+.error-divider {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #e2e8f0, transparent);
+    margin: 30px 0;
+}
+
+/* Botones de acción */
+.error-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+    animation: fadeInUp 0.6s ease-out 0.3s;
+    animation-fill-mode: both;
+}
+
+.error-btn {
+    padding: 14px 32px;
+    border-radius: 50px;
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-block;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    border: none;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    color: white;
+}
+
+.btn-secondary {
+    background: white;
+    color: #667eea;
+    border: 2px solid #667eea;
+}
+
+.btn-secondary:hover {
+    background: #667eea;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+/* Ayuda adicional */
+.error-help {
+    animation: fadeInUp 0.6s ease-out 0.4s;
+    animation-fill-mode: both;
+}
+
+.error-help p {
+    font-size: 14px;
+    color: #a0aec0;
+    margin-bottom: 10px;
+}
+
+.error-help a {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.error-help a:hover {
+    color: #764ba2;
+    text-decoration: underline;
+}
+
+.error-code {
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    color: #cbd5e0;
+    margin-top: 15px;
+}
+
+
+
+@keyframes float {
+    0%, 100% {
+        transform: translate(0, 0);
+    }
+    50% {
+        transform: translate(30px, 30px);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .error-content {
+        padding: 40px 30px;
+    }
+    
+    .error-title {
+        font-size: 26px;
+    }
+    
+    .error-message {
+        font-size: 18px;
+    }
+    
+    .error-icon {
+        font-size: 60px;
+    }
+    
+    .error-actions {
+        flex-direction: column;
+    }
+    
+    .error-btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .error-container {
+        margin: 10px;
+    }
+    
+    .error-content {
+        padding: 30px 20px;
+    }
+    
+    .error-title {
+        font-size: 22px;
+    }
+    
+    .error-message {
+        font-size: 16px;
+    }
+    
+    .error-details p {
+        font-size: 14px;
+    }
+    
+    .error-btn {
+        padding: 12px 24px;
+        font-size: 14px;
+    }
+}
+
+/* Modo oscuro (opcional) */
+@media (prefers-color-scheme: dark) {
+    .error-content {
+        background: rgba(45, 55, 72, 0.98);
+    }
+    
+    .error-title {
+        color: #f7fafc;
+    }
+    
+    .error-message {
+        color: #e2e8f0;
+    }
+    
+    .error-details {
+        background: #2d3748;
+    }
+    
+    .error-details p {
+        color: #cbd5e0;
+    }
+}

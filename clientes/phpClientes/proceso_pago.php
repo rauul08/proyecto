@@ -41,8 +41,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $coste_envio = 20; // Costo de envío para otras zonas permitidas
         }
     } else {
-        // La dirección no está en la lista de permitidas
-        echo "Lo sentimos, no ofrecemos servicio de entrega en su zona.";
+        // La dirección no está en la lista de permitidas - Redirigir a página de error
+        header("Location: error.php?tipo=zona_entrega");
         exit; // Detiene la ejecución del script
     }
 
@@ -97,16 +97,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     // Redirigir a una página de confirmación o similar
                     exit;
                 } else {
-                    echo "Error al actualizar el registro de pedidos.";
+                    header("Location: error.php?tipo=compra&mensaje=" . urlencode("Error al actualizar el registro de pedidos."));
+                    exit;
                 }
             } else {
-                echo "Cliente no encontrado.";
+                header("Location: error.php?tipo=compra&mensaje=" . urlencode("Cliente no encontrado."));
+                exit;
             }
         } else {
-            echo "ID de cliente no encontrado en la sesión.";
+            header("Location: error.php?tipo=sesion_expirada");
+            exit;
         }
     } else {
-        echo "Error al guardar el pedido.";
+        header("Location: error.php?tipo=compra&mensaje=" . urlencode("Error al guardar el pedido. Por favor, intenta nuevamente."));
+        exit;
     }
 }
 ?>

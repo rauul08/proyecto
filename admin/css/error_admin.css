@@ -1,0 +1,293 @@
+/* Estilos para la página de errores del panel de administración */
+
+.admin-error-body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-x: hidden;
+}
+
+.admin-error-container {
+    width: 100%;
+    max-width: 700px;
+    margin: 20px;
+    position: relative;
+    z-index: 10;
+}
+
+.admin-error-content {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 50px 40px;
+    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.35);
+    text-align: center;
+    position: relative;
+}
+
+/* Branding */
+.admin-error-brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+.admin-error-logo {
+    height: 50px;
+    width: auto;
+}
+
+.admin-badge {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+/* Icono de error */
+.admin-error-icon-wrapper {
+    margin-bottom: 30px;
+}
+
+.admin-error-circle {
+    width: 120px;
+    height: 120px;
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.admin-error-icon {
+    font-size: 55px;
+    color: white;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 15px 40px rgba(255, 107, 107, 0.5);
+    }
+}
+
+/* Título */
+.admin-error-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: #1a202c;
+    margin-bottom: 15px;
+    letter-spacing: -0.5px;
+}
+
+/* Mensaje principal */
+.admin-error-message {
+    font-size: 18px;
+    font-weight: 500;
+    color: #4a5568;
+    margin-bottom: 25px;
+}
+
+/* Detalles del error */
+.admin-error-details {
+    background: #f7fafc;
+    border-left: 4px solid #ff6b6b;
+    padding: 20px 25px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+    text-align: left;
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+}
+
+.admin-error-details i {
+    font-size: 20px;
+    color: #ff6b6b;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+.admin-error-details p {
+    font-size: 15px;
+    color: #4a5568;
+    line-height: 1.6;
+    margin: 0;
+    flex: 1;
+}
+
+/* Botones de acción */
+.admin-error-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+}
+
+.admin-error-btn {
+    padding: 14px 30px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    border: none;
+    cursor: pointer;
+}
+
+.admin-error-btn i {
+    font-size: 14px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    color: white;
+}
+
+.btn-secondary {
+    background: white;
+    color: #667eea;
+    border: 2px solid #667eea;
+}
+
+.btn-secondary:hover {
+    background: #667eea;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+/* Footer de error */
+.admin-error-footer {
+    border-top: 1px solid #e2e8f0;
+    padding-top: 20px;
+    margin-top: 10px;
+}
+
+.admin-error-code,
+.admin-error-timestamp {
+    font-size: 13px;
+    color: #a0aec0;
+    margin: 5px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.admin-error-code {
+    font-family: 'Courier New', monospace;
+    font-weight: 600;
+}
+
+.admin-error-footer i {
+    font-size: 12px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .admin-error-content {
+        padding: 40px 25px;
+    }
+    
+    .admin-error-title {
+        font-size: 26px;
+    }
+    
+    .admin-error-message {
+        font-size: 16px;
+    }
+    
+    .admin-error-circle {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .admin-error-icon {
+        font-size: 45px;
+    }
+    
+    .admin-error-actions {
+        flex-direction: column;
+    }
+    
+    .admin-error-btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .admin-error-brand {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 480px) {
+    .admin-error-container {
+        margin: 10px;
+    }
+    
+    .admin-error-content {
+        padding: 30px 20px;
+    }
+    
+    .admin-error-title {
+        font-size: 22px;
+    }
+    
+    .admin-error-message {
+        font-size: 15px;
+    }
+    
+    .admin-error-details {
+        padding: 15px 20px;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .admin-error-btn {
+        padding: 12px 24px;
+        font-size: 14px;
+    }
+}
+
+/* Animación de entrada */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
