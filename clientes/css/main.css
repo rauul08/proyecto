@@ -80,10 +80,11 @@ body {
 
 .fondo {
     display:flex;
-justify-content: space-between;
-height: 60px;
-margin-top: 0px;
-background-color: #8B4513;
+    justify-content: center;
+    justify-content: flex-start;
+    height: 60px;
+    margin-top: 0px;
+    background-color: #FFE1DE;
 
 }
 
@@ -99,8 +100,9 @@ background-color: #8B4513;
 
 #logo {
     max-height: 100%;
-    height: 30px; /* O puedes usar max-height: 60px; para asegurar que se mantenga dentro del navbar */
+    height: 40px;
     width: auto;
+    margin-top: 4px;
 }
 
 

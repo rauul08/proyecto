@@ -104,14 +104,14 @@ body {
     background-color: #FFA500;
 }
 
-.fondo {
+/* .fondo {
     display: flex;
     justify-content: center;
-    align-items: flex-start; /* Cambio de align-items */
+    align-items: flex-start; 
     height: 60px;
     margin-top: 0px;
     background-color: #FFA500;
-}
+} */
 
 #conocenos-container {
     transition: margin-left 500ms linear;
@@ -135,7 +135,7 @@ body {
 .background {
     background-color: #FFE1DE;
     opacity: 60%;
-    height: 40vh;
+    height: 52vh;
     width: 64vh;
     text-align: center;
     position: absolute;

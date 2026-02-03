@@ -78,6 +78,6 @@
     </div>
 </body>
 <footer>
-    <span class="footer-line">©2024 JIREH Y ASOCIADOS, INC. ALGUNOS PRODUCTOS ESTAN SUJETOS A DISPONIBILIDAD<span>
+    <span class="footer-line">©2026 JIREH Y ASOCIADOS, INC. ALGUNOS PRODUCTOS ESTAN SUJETOS A DISPONIBILIDAD<span>
 </footer>
 </html>

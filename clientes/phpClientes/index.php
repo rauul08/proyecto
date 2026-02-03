@@ -41,6 +41,7 @@ print_r($_SESSION); /*/
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fugaz+One&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <meta property="og:title" content="Tienda de comida rapida">
     <meta property="og:description" content="Tienda en linea de la empresa de comida rapida JIREH">
     <style>
@@ -88,24 +89,129 @@ print_r($_SESSION); /*/
     vertical-align: middle;
     margin-right: 10px;
 }
+
+.fondo {
+    background-color: #FFE1DE;
+    justify-content: center;
+}
+
+.fondo a {
+    color: #8B4513;
+    font-family: 'Arial', sans-serif;
+}
+
+/* Propiedad del logo por el cual no se porque no funciona en main */
+#logo {
+    max-height: 100%;
+    height: 40px;
+    width: auto;
+    margin-top: 4px;
+}
+
+.nav-underline .nav-item .nav-link:hover,
+.nav-underline .nav-item .nav-link.active {
+    border-bottom: 2px solid #FFD700;
+    color: #8B4513;
+}
+
+.badge.bg-secondary {
+    color: #FFA500;
+}
+
+.navbar-brand img {
+    height: 40px;
+}
+
+.busqueda {
+    display: flex;
+    align-items: center;
+    margin: 5px 10px;
+}
+
+.busqueda form {
+    margin: 0;
+}
+
+.busqueda input[type="text"] {
+    padding: 5px 10px;
+    border: 1px solid #8B4513;
+    border-radius: 20px;
+    font-size: 14px;
+    width: 300px;
+    outline: none;
+}
+
+.busqueda input[type="text"]:focus {
+    border-color: #FFD700;
+    box-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+}
+
+.busqueda .invincible {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #8B4513;
+    font-size: 16px;
+    padding: 5px;
+}
     </style>
 </head>
 
   <body>
-    <div id="conteiner">
-        <div id="sidebar">
-            <div class="toggle-btn">
-                <span>&#9776;</span>
-            </div>
-         <a href="../html/index.html"><img src="../images/jLeft.png" alt="leftside"></a>
-            <ul class="secciones">
-                <li><a href="index.php">MENÚ</a></li>
-                <li><a href="promociones.php">PAQUETES</a></li>
-                <li><a href="../html/delivery.html">DELIVERY</a></li>
-                <li><a href="../html/conócenos.html">CONÓCENOS</a></li>
+    <header>
+        <nav class="fondo">
+            <ul class="nav nav-underline">
+                <a class="navbar-brand" href="../html/index.html">
+                    <img id="logo" src="../images/jLeft.png" alt="Logotipo de la Empresa">
+                </a>
+                <li class="nav-item">
+                    <a class="nav-link" href="../html/index.html">Inicio</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="index.php">Menú</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="promociones.php">Paquetes</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="../html/delivery.html">Delivery</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="../html/conócenos.html">Conócenos</a>
+                </li>
+                 <li class="nav-item">
+                    <a class="nav-link" href="checkout.php">| Pedidos<span id="num_cart" class="badge bg-secondary"><?php echo $total_items;?></span> |</a>
+                </li>
+                <div class="bad" style="padding: 0 75px 0 265px;">
+                <li class="busqueda">
+                    <form action="index.php" method="GET" autocomplete="off">
+                        <input type="text" name="search" id="seeker" placeholder=" calidad garantizada en todos tus pedidos" value="<?php echo htmlspecialchars($search); ?>">
+                        <!--<button class="invincible" type="submit"><i class="fas fa-search"></i></button>-->
+                    </form>
+                </li>
+                <?php if(isset($_SESSION['user_id'])) { ?>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" style="width: 20px; height: 20px;">
+                            <path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304H178.3z"/>
+                        </svg>
+                        <?php echo $_SESSION['user_name']; ?>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="logout.php">Cerrar sesión</a></li>
+                    </div>
+                    </ul>
+                </li>
+                <?php } else { ?>
+                <li class="nav-item" style="margin-right: 30px;">
+                    <a class="nav-link" href="login.php"><span class="badge bg-secondary">Iniciar Sesión</span></a>
+                </li>
+                <?php } ?>
+                </div>
             </ul>
-        </div>  
-    <?php include 'menu.php'; ?>
+        </nav>  
+    </header>
+    <div id="conteiner">
      <div id="bienvenida">
         <article>Bienvenido seas al restaurante de comida rapida JIREH. Donde nuestra prioridad es tu satisfacción</article>
     </div>
@@ -158,9 +264,10 @@ print_r($_SESSION); /*/
             })
         }
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
   </body>
   <footer>
-    <span class="footer-line">®2024 JIREH Y ASOCIADOS, INC. ALGUNOS PRODUCTOS ESTAN SUJETOS A DISPONIBILIDAD<span>
+    <span class="footer-line">®2026 JIREH Y ASOCIADOS, INC. ALGUNOS PRODUCTOS ESTAN SUJETOS A DISPONIBILIDAD<span>
 </footer>
 </html>
