@@ -254,17 +254,18 @@ if(!empty($_POST)){
             existeEmail(txtEmail.value)
         }, false)
 
-        function existeEmail(email) {
-            let url = "../clases/clienteAjax.php"
-            let formData = new FormData()
-            formData.append("action", "existeEmail")
-            formData.append("email", email)
+        async function existeEmail(email) {
+            try {
+                let url = "../clases/clienteAjax.php"
+                let formData = new FormData()
+                formData.append("action", "existeEmail")
+                formData.append("email", email)
 
-            fetch(url, {
-                method: 'POST',
-                body: formData
-            }).then(response => response.json())
-            .then(data => {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
 
                 if(data.ok) {
                     document.getElementById('email').value = ''
@@ -272,20 +273,23 @@ if(!empty($_POST)){
                 } else {
                     document.getElementById('validaEmail').innerHTML = ''
                 }
-            })
+            } catch (error) {
+                console.error('Error:', error);
+            }
         }
 
-        function existeUsuario(usuario) {
-            let url = "../clases/clienteAjax.php"
-            let formData = new FormData()
-            formData.append("action", "existeUsuario")
-            formData.append("usuario", usuario)
+        async function existeUsuario(usuario) {
+            try {
+                let url = "../clases/clienteAjax.php"
+                let formData = new FormData()
+                formData.append("action", "existeUsuario")
+                formData.append("usuario", usuario)
 
-            fetch(url, {
-                method: 'POST',
-                body: formData
-            }).then(response => response.json())
-            .then(data => {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
 
                 if(data.ok) {
                     document.getElementById('usuario').value = ''
@@ -293,7 +297,9 @@ if(!empty($_POST)){
                 } else {
                     document.getElementById('validaUsuario').innerHTML = ''
                 }
-            })
+            } catch (error) {
+                console.error('Error:', error);
+            }
         }
     </script>
 </body>

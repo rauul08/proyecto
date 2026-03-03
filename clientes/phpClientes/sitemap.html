@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JIREH | Conócenos</title>
+    <link rel="stylesheet" href="../css/conocenos.css">
+    <link rel="icon" type="images/jpeg"  href="../images/jLeft.png">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fugaz+One&display=swap" rel="stylesheet">
+    <meta property="og:title" content="Tienda de comida rapida">
+    <meta property="og:description" content="Tienda en linea de la empresa de comida rapida JIREH">
+    <style>
+
+        .fondo a {
+            color: #8B4513;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .nav-underline {
+            display: flex;
+            gap: 1em;
+        }
+
+        .nav-underline li {
+            list-style: none;
+        }
+
+        .nav-underline .nav-item .nav-link:hover,
+        .nav-underline .nav-item .nav-link.active {
+            border-bottom: 2px solid #FFD700;
+            color: #8B4513;
+        }
+
+        .badge.bg-secondary {
+            color: #FFA500;
+        }
+
+        .navbar-brand img {
+            height: 40px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="fondo">
+            <ul class="nav nav-underline">
+                <a class="navbar-brand" href="../index.html">
+                    <img id="logo" src="../images/jLeft.png" alt="Logotipo de la Empresa">
+                </a>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="../index.html">Inicio</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="../phpClientes/index.php">Menú</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="../phpClientes/promociones.php">Paquetes</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="delivery.html">Delivery</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="conócenos.html">Conócenos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="sitemap.html">Mapa de sitio</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link disabled" aria-disabled="true">| Social Media <li><i class="fa fa-phone fa-rotate-90"></i><li><i class="fa fa-envelope" aria-hidden="true"></i> |</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="../phpClientes/login.php"><span class="badge bg-secondary">Iniciar Sesión</span></a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <main style="padding: 2em;">
+        <h1 style="font-family: Arial, Helvetica, sans-serif;">Mapa de sitio</h1>
+        <img src="../images/sitemap.jpeg" alt="Mapa de sitio de la página web">
+    </main>
+</body>
+</html>

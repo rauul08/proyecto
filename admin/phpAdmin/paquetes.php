@@ -143,29 +143,25 @@ document.addEventListener('DOMContentLoaded', function() {
         paqueteIdEliminar = button.getAttribute('data-bs-id');
     });
 
-    btnEliminar.addEventListener('click', function() {
-        fetch('../clases/actualizarPaquetes.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: 'action=eliminar&id=' + paqueteIdEliminar
-        })
-        .then(response => response.text())  // Use .text() instead of .json() to see the full response
-        .then(data => {
-            try {
-                var json = JSON.parse(data);
-                if (json.ok) {
-                    window.location.reload();
-                } else {
-                    alert('Error al quitar el paquete');
-                }
-            } catch (e) {
-                console.error('Error:', data);  // Log the full response if JSON.parse fails
-                alert('Error al procesar la respuesta del servidor');
+    btnEliminar.addEventListener('click', async function() {
+        try {
+            const response = await fetch('../clases/actualizarPaquetes.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: 'action=eliminar&id=' + paqueteIdEliminar
+            });
+            const data = await response.json();
+
+            if (data.ok) {
+                window.location.reload();
+            } else {
+                alert('Error al quitar el paquete');
             }
-        })
-        .catch(error => console.error('Error:', error));
+        } catch (error) {
+            console.error('Error:', error);
+        }
     });
 
     // Editar
@@ -185,30 +181,26 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('editar-descuento').value = button.getAttribute('data-bs-descuento');
     });
 
-    btnGuardar.addEventListener('click', function() {
-        var formData = new FormData(formEditar);
-        formData.append('id', paqueteIdEditar);
-        formData.append('action', 'editar');
+    btnGuardar.addEventListener('click', async function() {
+        try {
+            var formData = new FormData(formEditar);
+            formData.append('id', paqueteIdEditar);
+            formData.append('action', 'editar');
 
-        fetch('../clases/actualizarPaquetes.php', {
-            method: 'POST',
-            body: new URLSearchParams(formData)
-        })
-        .then(response => response.text())  // Use .text() instead of .json() to see the full response
-        .then(data => {
-            try {
-                var json = JSON.parse(data);
-                if (json.ok) {
-                    window.location.reload();
-                } else {
-                    alert('Error al editar el paquete');
-                }
-            } catch (e) {
-                console.error('Error:', data);  // Log the full response if JSON.parse fails
-                alert('Error al procesar la respuesta del servidor');
+            const response = await fetch('../clases/actualizarPaquetes.php', {
+                method: 'POST',
+                body: new URLSearchParams(formData)
+            });
+            const data = await response.json();
+
+            if (data.ok) {
+                window.location.reload();
+            } else {
+                alert('Error al editar el paquete');
             }
-        })
-        .catch(error => console.error('Error:', error));
+        } catch (error) {
+            console.error('Error:', error);
+        }
     });
 });
 </script>

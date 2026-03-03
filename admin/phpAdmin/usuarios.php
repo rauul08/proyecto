@@ -173,23 +173,25 @@ $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
             document.getElementById('editar-direccion').value = button.getAttribute('data-bs-direccion');
         });
 
-        btnGuardar.addEventListener('click', function() {
-            var formData = new FormData(formEditar);
-            formData.append('action', 'modificar');
+        btnGuardar.addEventListener('click', async function() {
+            try {
+                var formData = new FormData(formEditar);
+                formData.append('action', 'modificar');
 
-            fetch('../clases/actualizarClientes.php', {
-                method: 'POST',
-                body: new URLSearchParams(formData)
-            })
-            .then(response => response.json())
-            .then(data => {
+                const response = await fetch('../clases/actualizarClientes.php', {
+                    method: 'POST',
+                    body: new URLSearchParams(formData)
+                });
+                const data = await response.json();
+
                 if (data.ok) {
                     window.location.reload();
                 } else {
                     alert('Error al modificar correo electrónico existente');
                 }
-            })
-            .catch(error => console.error('Error:', error));
+            } catch (error) {
+                console.error('Error:', error);
+            }
         });
     } else {
         console.error('Error: Los elementos necesarios para la edición no están presentes en el DOM.');
@@ -206,23 +208,25 @@ $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
             clienteIdEliminar = button.getAttribute('data-bs-id');
         });
 
-        btnElimina.addEventListener('click', function() {
-            fetch('../clases/actualizarClientes.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: 'action=eliminar&id=' + clienteIdEliminar
-            })
-            .then(response => response.json())
-            .then(data => {
+        btnElimina.addEventListener('click', async function() {
+            try {
+                const response = await fetch('../clases/actualizarClientes.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: 'action=eliminar&id=' + clienteIdEliminar
+                });
+                const data = await response.json();
+
                 if (data.ok) {
                     window.location.reload();
                 } else {
                     alert('Error al dar de baja al cliente');
                 }
-            })
-            .catch(error => console.error('Error:', error));
+            } catch (error) {
+                console.error('Error:', error);
+            }
         });
     } else {
         console.error('Error: Los elementos necesarios para la eliminación no están presentes en el DOM.');
@@ -239,23 +243,25 @@ $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
             clienteIdGuardar = button.getAttribute('data-bs-id');
         });
 
-        btnAlta.addEventListener('click', function() {
-            fetch('../clases/actualizarClientes.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: 'action=alta&id=' + clienteIdGuardar
-            })
-            .then(response => response.json())
-            .then(data => {
+        btnAlta.addEventListener('click', async function() {
+            try {
+                const response = await fetch('../clases/actualizarClientes.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: 'action=alta&id=' + clienteIdGuardar
+                });
+                const data = await response.json();
+
                 if (data.ok) {
                     window.location.reload();
                 } else {
                     alert('Error al dar de alta al cliente');
                 }
-            })
-            .catch(error => console.error('Error:', error));
+            } catch (error) {
+                console.error('Error:', error);
+            }
         });
     } else {
         console.error('Error: Los elementos necesarios para la alta no están presentes en el DOM.');

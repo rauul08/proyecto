@@ -135,32 +135,28 @@ document.addEventListener('DOMContentLoaded', function() {
         productoIdQuitar = button.getAttribute('data-bs-id');
     });
 
-    btnQuita.addEventListener('click', function() {
-        fetch('../clases/actualizarProductos.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: new URLSearchParams({
-                action: 'eliminar',
-                id: productoIdQuitar
-            })
-        })
-        .then(response => response.text())  // Cambiado a text() para depurar
-        .then(text => {
-            try {
-                const data = JSON.parse(text);  // Intentar parsear el texto como JSON
-                if (data.ok) {
-                    window.location.reload();
-                } else {
-                    alert('Error al quitar el producto');
-                }
-            } catch (e) {
-                console.error('Error al parsear JSON:', e);
-                console.log('Respuesta del servidor:', text);
+    btnQuita.addEventListener('click', async function() {
+        try {
+            const response = await fetch('../clases/actualizarProductos.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams({
+                    action: 'eliminar',
+                    id: productoIdQuitar
+                })
+            });
+            const data = await response.json();
+
+            if (data.ok) {
+                window.location.reload();
+            } else {
+                alert('Error al quitar el producto');
             }
-        })
-        .catch(error => console.error('Error:', error));
+        } catch (error) {
+            console.error('Error:', error);
+        }
     });
 
     // Script para el modal de editar
@@ -179,33 +175,29 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('editar-precio').value = button.getAttribute('data-bs-precio');
     });
 
-    btnGuardar.addEventListener('click', function() {
-        var formData = new FormData(formEditar);
-        formData.append('id', productoIdEditar);
-        formData.append('action', 'editar');
+    btnGuardar.addEventListener('click', async function() {
+        try {
+            var formData = new FormData(formEditar);
+            formData.append('id', productoIdEditar);
+            formData.append('action', 'editar');
 
-        fetch('../clases/actualizarProductos.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: new URLSearchParams(formData)  // Asegúrate de que los datos estén en el formato correcto
-        })
-        .then(response => response.text())  // Cambiado a text() para depurar
-        .then(text => {
-            try {
-                const data = JSON.parse(text);  // Intentar parsear el texto como JSON
-                if (data.ok) {
-                    window.location.reload();
-                } else {
-                    alert('Error al editar el producto');
-                }
-            } catch (e) {
-                console.error('Error al parsear JSON:', e);
-                console.log('Respuesta del servidor:', text);
+            const response = await fetch('../clases/actualizarProductos.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams(formData)
+            });
+            const data = await response.json();
+
+            if (data.ok) {
+                window.location.reload();
+            } else {
+                alert('Error al editar el producto');
             }
-        })
-        .catch(error => console.error('Error:', error));
+        } catch (error) {
+            console.error('Error:', error);
+        }
     });
 });
 </script>

@@ -109,23 +109,26 @@ document.addEventListener('DOMContentLoaded', function() {
     pedidoId = button.getAttribute('data-id');
   });
 
-  confirmarCambio.addEventListener('click', function() {
-    // Hacer la solicitud AJAX para actualizar el estado del pedido
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', '../clases/procesarPedidos.php', true);
-    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    xhr.onreadystatechange = function() {
-      if (xhr.readyState === 4 && xhr.status === 200) {
-        // Manejar la respuesta del servidor
-        console.log(xhr.responseText);
-        // Cerrar el modal
-        var modalInstance = bootstrap.Modal.getInstance(actualizarPedido);
-        modalInstance.hide();
-        // Actualizar la tabla de pedidos
-        location.reload();
-      }
-    };
-    xhr.send('id=' + pedidoId + '&proceso=2');
+  confirmarCambio.addEventListener('click', async function() {
+    try {
+      const response = await fetch('../clases/procesarPedidos.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: 'id=' + pedidoId + '&proceso=2'
+      });
+      const texto = await response.text();
+      console.log(texto);
+
+      // Cerrar el modal
+      var modalInstance = bootstrap.Modal.getInstance(actualizarPedido);
+      modalInstance.hide();
+      // Actualizar la tabla de pedidos
+      location.reload();
+    } catch (error) {
+      console.error('Error:', error);
+    }
   });
 });
 </script>

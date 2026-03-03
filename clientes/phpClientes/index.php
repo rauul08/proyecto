@@ -212,6 +212,18 @@ print_r($_SESSION); /*/
         </nav>  
     </header>
     <div id="conteiner">
+        <!-- <div id="sidebar">
+            <div class="toggle-btn">
+                <span>&#9776;</span>
+            </div>
+         <a href="../html/index.html"><img src="../images/jLeft.png" alt="leftside"></a>
+            <ul class="secciones">
+                <li><a href="index.php">MENÚ</a></li>
+                <li><a href="promociones.php">PAQUETES</a></li>
+                <li><a href="../html/delivery.html">DELIVERY</a></li>
+                <li><a href="../html/conócenos.html">CONÓCENOS</a></li>
+            </ul>
+        </div>  -->
      <div id="bienvenida">
         <article>Bienvenido seas al restaurante de comida rapida JIREH. Donde nuestra prioridad es tu satisfacción</article>
     </div>
