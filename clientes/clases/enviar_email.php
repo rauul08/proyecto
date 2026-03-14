@@ -2,6 +2,7 @@
 
 use PHPMailer\PHPMailer\{PHPMailer, SMTP, Exception};
 
+require_once '../config/config.php';
 
 require '../phpmailer/src/PHPMailer/PHPMailer.php';
 require '../phpmailer/src/PHPMailer/SMTP.php';
@@ -12,18 +13,18 @@ $mail = new PHPMailer(true);
 
 try {
     //Server settings
-    $mail->SMTPDebug = SMTP::DEBUG_SERVER; //SMTP ::DEBUG_OFF;
+    $mail->SMTPDebug = MAIL_SMTP_DEBUG;
     $mail->isSMTP();                                            //Send using SMTP
-    $mail->Host       = 'smtp.gmail.com';                     //Set the SMTP server to send through
+    $mail->Host       = MAIL_HOST;                     //Set the SMTP server to send through
     $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
-    $mail->Username   = 'jireh.bussines@gmail.com';                     //SMTP username
-    $mail->Password   = 'emailsecret';                               //SMTP password
+    $mail->Username   = MAIL_USER;                     //SMTP username
+    $mail->Password   = MAIL_PASS;                               //SMTP password
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;            //Enable implicit TLS encryption
-    $mail->Port       = 465;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
+    $mail->Port       = MAIL_PORT;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
 
     //Recipients
-    $mail->setFrom('jireh.bussines@gmail.com', 'COMIDA JIREH');
-    $mail->addAddress('jireh.bussines@gamil.com', 'JIREH User');     //Add a recipient
+    $mail->setFrom(MAIL_USER, 'COMIDA JIREH');
+    $mail->addAddress(MAIL_USER, 'JIREH User');     //Add a recipient
 
 
 

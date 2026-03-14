@@ -7,7 +7,10 @@ require '../clases/clienteFunciones.php';
 $user_id = $_GET['id'] ?? $_POST['user_id'] ?? '';
 $token = $_GET['token'] ?? $_POST['token'] ?? '';
 
-if($user_id == '' | $token == '') {
+$user_id = trim((string) $user_id);
+$token = trim((string) $token);
+
+if ($user_id === '' || $token === '' || !ctype_digit($user_id) || !ctype_xdigit($token)) {
     header("Location: index.php");
     exit;
 }
@@ -16,6 +19,7 @@ $db = new Database();
 $con = $db->conectar();
 
 $errors = [];
+$csrfFormKey = 'reset_password_form';
 
 if(!verificaTokenRequest($user_id, $token, $con)) {
     echo "No se pudo verificar la información";
@@ -23,6 +27,9 @@ if(!verificaTokenRequest($user_id, $token, $con)) {
 }
 
 if(!empty($_POST)){
+    if (!validaCsrfToken($csrfFormKey, $_POST['csrf_token'] ?? null)) {
+        $errors[] = "Token de seguridad invalido. Recarga la pagina e intenta de nuevo.";
+    }
 
     $password = trim($_POST['password']);
     $repassword = trim($_POST['repassword']);
@@ -190,6 +197,7 @@ background-color: #FFE1DE;
         <?php	mostrarMensajes($errors); ?>
 
         <form class="row g-3" action="reset_password.php" method="post" autocomplete="off">
+        <?php echo csrfInput($csrfFormKey); ?>
 
         <input type="hidden" name="user_id" id="user_id" value="<?= $user_id; ?>" />
         <input type="hidden" name="token" id="token" value="<?= $token; ?>" />

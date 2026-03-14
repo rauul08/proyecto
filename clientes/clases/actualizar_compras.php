@@ -1,16 +1,17 @@
 <?php
-require 'config/config.php';
-require 'config/database.php';
-$db = new Database();
-$con = $db->conectar();
-
-print_r($_SESSION);
+require '../config/config.php';
 
 $response = ['ok' => false]; // Respuesta por defecto
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'eliminar') {
-    $id = $_POST['id'];
-    $tipo = $_POST['tipo'];
+    $id = isset($_POST['id']) ? (int) $_POST['id'] : 0;
+    $tipo = $_POST['tipo'] ?? '';
+
+    if ($id <= 0 || ($tipo !== 'producto' && $tipo !== 'paquete')) {
+        header('Content-Type: application/json');
+        echo json_encode($response);
+        exit;
+    }
 
     try {
         if ($tipo === 'producto') {

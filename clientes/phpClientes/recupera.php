@@ -8,8 +8,12 @@ $con = $db->conectar();
 
 
 $errors = [];
+$csrfFormKey = 'recupera_form';
 
 if(!empty($_POST)){
+    if (!validaCsrfToken($csrfFormKey, $_POST['csrf_token'] ?? null)) {
+        $errors[] = "Token de seguridad invalido. Recarga la pagina e intenta de nuevo.";
+    }
 
     $email = trim($_POST['email']);
 
@@ -45,17 +49,17 @@ if(!empty($_POST)){
 
         if($mailer->enviarEmail($email, $asunto, $cuerpo)) {
             echo "<p><b>Correo enviado</b></p>";
-            echo "<p>Se ha enviado un correo electrónico a la dirección $email para reestablecer 
-            la contraseña.</p>";
+                        echo "<p>Si la cuenta existe, hemos enviado instrucciones para restablecer la contraseña.</p>";
             exit;
         }
 
 
         }
-
-      } else {
-        $errors[] = "No existe una cuenta asociada a esta dirección de correo";
       }
+
+            echo "<p><b>Solicitud procesada</b></p>";
+            echo "<p>Si la cuenta existe, hemos enviado instrucciones para restablecer la contraseña.</p>";
+            exit;
     }
  }
 
@@ -200,6 +204,7 @@ background-color: #FFE1DE;
         <?php	mostrarMensajes($errors); ?>
 
         <form class="row g-3" action="recupera.php" method="post" autocomplete="off">
+            <?php echo csrfInput($csrfFormKey); ?>
             <div class="form-floating">
                 <input class="form-control" type="email" name="email" id="email" placeholder="Correo electrónico" required>
                 <label for="email">Correo electrónico</label>

@@ -19,6 +19,8 @@
                     <?php echo $_SESSION['user_name']; ?>
                 </button>
                 <div class="dropdown-content">
+                    <a href="../clases/perfilCliente.php?action=obtener" target="_blank" rel="noopener">Mi perfil (endpoint)</a>
+                    <a href="../clases/perfilCliente.php?action=csrf" target="_blank" rel="noopener">Token perfil (endpoint)</a>
                     <a href="logout.php">Cerrar sesión</a>
                 </div>
             </div>

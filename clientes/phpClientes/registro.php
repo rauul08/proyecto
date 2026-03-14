@@ -8,8 +8,12 @@ $con = $db->conectar();
 
 
 $errors = [];
+$csrfFormKey = 'registro_form';
 
 if(!empty($_POST)){
+    if (!validaCsrfToken($csrfFormKey, $_POST['csrf_token'] ?? null)) {
+        $errors[] = "Token de seguridad invalido. Recarga la pagina e intenta de nuevo.";
+    }
 
     $nombres = trim($_POST['nombres']);
     $apellidos = trim($_POST['apellidos']);
@@ -199,6 +203,7 @@ if(!empty($_POST)){
             <h2 class="text-center">Registro de Sesión</h2>
             <?php mostrarMensajes($errors); ?>
             <form method="post" action="registro.php" autocomplete="off">
+                <?php echo csrfInput($csrfFormKey); ?>
                 <div class="form-group">
                     <label for="nombres">Nombres</label>
                     <input type="text" class="form-control" id="nombres" name="nombres" placeholder="Ingresa tus nombres" required>

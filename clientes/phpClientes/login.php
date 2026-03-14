@@ -8,8 +8,23 @@ $con = $db->conectar();
 
 
 $errors = [];
+$csrfFormKey = 'login_form';
+$maxLoginAttempts = 5;
+$loginLockSeconds = 900;
+
+if (!isset($_SESSION['login_attempts'])) {
+    $_SESSION['login_attempts'] = 0;
+}
+
+if (isset($_SESSION['login_lock_until']) && time() >= (int) $_SESSION['login_lock_until']) {
+    unset($_SESSION['login_lock_until']);
+    $_SESSION['login_attempts'] = 0;
+}
 
 if(!empty($_POST)){
+    if (!validaCsrfToken($csrfFormKey, $_POST['csrf_token'] ?? null)) {
+        $errors[] = "Token de seguridad invalido. Recarga la pagina e intenta de nuevo.";
+    }
 
     $usuario = trim($_POST['usuario']);
     $password = trim($_POST['password']);
@@ -17,8 +32,25 @@ if(!empty($_POST)){
     if(esNulo([$usuario, $password])){
         $errors[] = "Debe llenar todos los campos";
     }
+    if (isset($_SESSION['login_lock_until']) && time() < (int) $_SESSION['login_lock_until']) {
+        $remaining = (int) $_SESSION['login_lock_until'] - time();
+        $minutes = (int) ceil($remaining / 60);
+        $errors[] = "Demasiados intentos fallidos. Intenta nuevamente en $minutes minuto(s).";
+    }
+
     if(count($errors) == 0) {
-    $errors[] = login($usuario, $password, $con);
+        $loginError = login($usuario, $password, $con);
+        if (!empty($loginError)) {
+            $_SESSION['login_attempts'] = (int) $_SESSION['login_attempts'] + 1;
+
+            if ((int) $_SESSION['login_attempts'] >= $maxLoginAttempts) {
+                $_SESSION['login_lock_until'] = time() + $loginLockSeconds;
+                $_SESSION['login_attempts'] = 0;
+                $errors[] = "Demasiados intentos fallidos. Intenta nuevamente en 15 minutos.";
+            } else {
+                $errors[] = $loginError;
+            }
+        }
     }
    }
 
@@ -163,6 +195,7 @@ background-color: #FFE1DE;
         <?php	mostrarMensajes($errors); ?>
 
         <form class="row g-3" action="login.php" method="post" autocomplete="off">
+            <?php echo csrfInput($csrfFormKey); ?>
             <div class="form-floating">
                 <input class="form-control" type="text" name="usuario" id="usuario" placeholder="usuario" required>
                 <label for="usuario">Usuario</label>

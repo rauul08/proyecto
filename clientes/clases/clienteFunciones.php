@@ -27,7 +27,11 @@ function validaPassword($password, $repassword) {
 
 function generarToken() 
 {
-return md5(uniqid(mt_rand(), false));
+    try {
+        return bin2hex(random_bytes(32));
+    } catch (Exception $e) {
+        return hash('sha256', uniqid((string) mt_rand(), true));
+    }
 }
 
 function registraCliente(array $datos, $con) 
@@ -121,6 +125,8 @@ function login($usuario, $password, $con) {
     if($row = $sql->fetch(PDO::FETCH_ASSOC)){
     if(esActivo($usuario, $con)) {
     if(password_verify($password, $row['password'])) {
+        session_regenerate_id(true);
+        unset($_SESSION['login_attempts'], $_SESSION['login_lock_until']);
         $_SESSION['user_id'] = $row['id'];
         $_SESSION['user_name'] = $row['usuario'];
         $_SESSION['user_cliente'] = $row['id_cliente'];
@@ -135,10 +141,10 @@ function login($usuario, $password, $con) {
 }
 
 function esActivo($usuario, $con) {
-    $sql = $con->prepare("SELECT activacion FROM usuarios WHERE usuario LIKE ? LIMIT 1");
+    $sql = $con->prepare("SELECT u.activacion, c.estatus FROM usuarios u INNER JOIN clientes c ON u.id_cliente = c.id WHERE u.usuario LIKE ? LIMIT 1");
     $sql->execute([$usuario]);
     $row = $sql->fetch(PDO::FETCH_ASSOC);
-    if($row['activacion'] == 1) {
+    if ($row && (int) $row['activacion'] === 1 && (int) $row['estatus'] === 1) {
         return true;
     }
     return false;
@@ -171,4 +177,115 @@ function actualizaPassword($user_id, $password, $con) {
         return true;
     }
     return false;
+}
+
+function csrfToken(string $formKey): string
+{
+    if (!isset($_SESSION['csrf_tokens']) || !is_array($_SESSION['csrf_tokens'])) {
+        $_SESSION['csrf_tokens'] = [];
+    }
+
+    if (empty($_SESSION['csrf_tokens'][$formKey])) {
+        $_SESSION['csrf_tokens'][$formKey] = bin2hex(random_bytes(32));
+    }
+
+    return $_SESSION['csrf_tokens'][$formKey];
+}
+
+function csrfInput(string $formKey): string
+{
+    $token = csrfToken($formKey);
+    return '<input type="hidden" name="csrf_token" value="' . htmlspecialchars($token, ENT_QUOTES, 'UTF-8') . '">';
+}
+
+function validaCsrfToken(string $formKey, ?string $token): bool
+{
+    if (!isset($_SESSION['csrf_tokens'][$formKey])) {
+        return false;
+    }
+
+    if (!is_string($token) || $token === '') {
+        return false;
+    }
+
+    $isValid = hash_equals($_SESSION['csrf_tokens'][$formKey], $token);
+
+    if ($isValid) {
+        unset($_SESSION['csrf_tokens'][$formKey]);
+    }
+
+    return $isValid;
+}
+
+function obtenerPerfilCliente(int $clienteId, $con): ?array
+{
+    $sql = $con->prepare("SELECT id, nombres, apellidos, email, telefono, direccion, estatus, fecha_alta, fecha_modifica FROM clientes WHERE id = ? LIMIT 1");
+    $sql->execute([$clienteId]);
+    $row = $sql->fetch(PDO::FETCH_ASSOC);
+    return $row ?: null;
+}
+
+function emailPerfilDisponible(string $email, int $clienteId, $con): bool
+{
+    $sql = $con->prepare("SELECT id FROM clientes WHERE email = ? AND id <> ? LIMIT 1");
+    $sql->execute([$email, $clienteId]);
+    return $sql->fetchColumn() === false;
+}
+
+function actualizarPerfilCliente(int $clienteId, array $datos, $con): bool
+{
+    $sql = $con->prepare("UPDATE clientes SET nombres = ?, apellidos = ?, email = ?, telefono = ?, direccion = ?, fecha_modifica = NOW() WHERE id = ?");
+    return $sql->execute([
+        $datos['nombres'],
+        $datos['apellidos'],
+        $datos['email'],
+        $datos['telefono'],
+        $datos['direccion'],
+        $clienteId
+    ]);
+}
+
+function verificarPasswordActual(int $userId, string $password, $con): bool
+{
+    $sql = $con->prepare("SELECT password FROM usuarios WHERE id = ? LIMIT 1");
+    $sql->execute([$userId]);
+    $hash = $sql->fetchColumn();
+
+    if (!$hash) {
+        return false;
+    }
+
+    return password_verify($password, $hash);
+}
+
+function cambiarPasswordPerfil(int $userId, string $newPasswordHash, $con): bool
+{
+    $sql = $con->prepare("UPDATE usuarios SET password = ?, token_password = '', password_request = 0 WHERE id = ?");
+    return $sql->execute([$newPasswordHash, $userId]);
+}
+
+function desactivarCuentaCliente(int $userId, int $clienteId, $con): bool
+{
+    try {
+        $con->beginTransaction();
+
+        $sqlCliente = $con->prepare("UPDATE clientes SET estatus = 0, fecha_baja = NOW(), fecha_modifica = NOW() WHERE id = ?");
+        $sqlUsuario = $con->prepare("UPDATE usuarios SET activacion = 0 WHERE id = ? AND id_cliente = ?");
+
+        $okCliente = $sqlCliente->execute([$clienteId]);
+        $okUsuario = $sqlUsuario->execute([$userId, $clienteId]);
+
+        if ($okCliente && $okUsuario) {
+            $con->commit();
+            return true;
+        }
+
+        $con->rollBack();
+        return false;
+    } catch (Exception $e) {
+        if ($con->inTransaction()) {
+            $con->rollBack();
+        }
+        return false;
+    }
 }
