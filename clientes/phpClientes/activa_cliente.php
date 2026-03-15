@@ -4,11 +4,10 @@ require '../config/config.php';
 require '../config/database.php';
 require '../clases/clienteFunciones.php';
 
-$id = isset($_GET['id']) ? $_GET['id'] : '';
-$token = isset($_GET['token']) ? $_GET['token'] : '';
+$id    = trim((string) ($_GET['id']    ?? ''));
+$token = trim((string) ($_GET['token'] ?? ''));
 
-
-if($id == '' || $token == ''){
+if (!ctype_digit($id) || $id === '' || !ctype_xdigit($token) || strlen($token) !== 64) {
     header("Location: index.php");
     exit;
 }

@@ -34,8 +34,31 @@ function eliminar($id) {
     $db = new Database();
     $con = $db->conectar();
 
-    $query = $con->prepare("UPDATE clientes SET estatus = 0, fecha_baja = NOW() WHERE id = ?");
-    return $query->execute([$id]);
+    try {
+        $con->beginTransaction();
+
+        $queryCliente = $con->prepare("UPDATE clientes SET estatus = 0, fecha_baja = NOW(), fecha_modifica = NOW() WHERE id = ?");
+        $okCliente = $queryCliente->execute([$id]);
+
+        $queryUsuario = $con->prepare("UPDATE usuarios SET activacion = 0 WHERE id_cliente = ?");
+        $okUsuario = $queryUsuario->execute([$id]);
+
+        $queryAuth = $con->prepare("UPDATE auth_users SET is_active = 0, updated_at = NOW() WHERE role = 'customer' AND legacy_cliente_id = ?");
+        $okAuth = $queryAuth->execute([$id]);
+
+        if ($okCliente && $okUsuario && $okAuth) {
+            $con->commit();
+            return true;
+        }
+
+        $con->rollBack();
+        return false;
+    } catch (Exception $e) {
+        if ($con->inTransaction()) {
+            $con->rollBack();
+        }
+        return false;
+    }
 }
 
 function modificar($id, $nombres, $apellidos, $email, $telefono, $direccion) {
@@ -54,8 +77,31 @@ function alta($id) {
     $db = new Database();
     $con = $db->conectar();
 
-    $query = $con->prepare("UPDATE clientes SET estatus = 1, fecha_modifica = NOW() WHERE id = ?");
-    return $query->execute([$id]);
+    try {
+        $con->beginTransaction();
+
+        $queryCliente = $con->prepare("UPDATE clientes SET estatus = 1, fecha_modifica = NOW() WHERE id = ?");
+        $okCliente = $queryCliente->execute([$id]);
+
+        $queryUsuario = $con->prepare("UPDATE usuarios SET activacion = 1 WHERE id_cliente = ?");
+        $okUsuario = $queryUsuario->execute([$id]);
+
+        $queryAuth = $con->prepare("UPDATE auth_users SET is_active = 1, updated_at = NOW() WHERE role = 'customer' AND legacy_cliente_id = ?");
+        $okAuth = $queryAuth->execute([$id]);
+
+        if ($okCliente && $okUsuario && $okAuth) {
+            $con->commit();
+            return true;
+        }
+
+        $con->rollBack();
+        return false;
+    } catch (Exception $e) {
+        if ($con->inTransaction()) {
+            $con->rollBack();
+        }
+        return false;
+    }
 }
 
 function emailExiste($email, $id) {

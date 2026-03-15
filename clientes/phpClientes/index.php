@@ -198,7 +198,10 @@ print_r($_SESSION); /*/
                         <?php echo $_SESSION['user_name']; ?>
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="logout.php">Cerrar sesión</a></li>
+                        <li>
+                            <a class="dropdown-item" href="perfil.php">Mi perfil</a>
+                            <a class="dropdown-item" href="logout.php">Cerrar sesión</a>
+                        </li>
                     </div>
                     </ul>
                 </li>

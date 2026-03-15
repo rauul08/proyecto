@@ -1,0 +1,126 @@
+body{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    list-style: none;
+    text-decoration: none;
+    overflow-x: hidden;
+}
+
+.fondo {
+    display:flex;
+justify-content: center;
+align-items: flex-start; /* Cambio de align-items */
+height: 60px;
+margin-top: 0px;
+background-color: #FFE1DE;
+position:none !important;
+}
+
+/* tarjeta del perfil */
+
+.perfil-card{
+    background:#ffffff;
+    border-radius:15px;
+    padding:30px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.1);
+    max-width:650px;
+    margin:auto;
+    margin-bottom: 10px;
+}
+
+/* encabezado */
+
+.perfil-header{
+    background:#FFD700;
+    padding:20px;
+    border-radius:15px 15px 0 0;
+    text-align:center;
+}
+
+.perfil-header h3{
+    color:#BE1622;
+    font-weight:bold;
+}
+
+/* información */
+
+.perfil-info p{
+    font-size:16px;
+    margin-bottom:10px;
+    color:#8B4513;
+}
+
+/* botón editar */
+
+.btn-jireh{
+    background-color:#FF4500;
+    color:white;
+    border:none;
+    padding:8px 16px;
+    border-radius:6px;
+    font-weight:500;
+    font-family:'Fugaz One', sans-serif;
+}
+
+.btn-jireh:hover{
+    background-color:#e03e00;
+    color:white;
+}
+
+/* botón eliminar */
+
+.btn-danger{
+    background:#BE1622;
+    color:white;
+    border:none;
+    padding:8px 16px;
+    border-radius:6px;
+    font-weight:500;
+    font-family:'Fugaz One', sans-serif;
+}
+
+/* botón cerrar sesión */
+
+.btn-secondary{
+    background:#8B4513;
+    border:none;
+    font-family: 'Fugaz One', sans-serif;
+}
+
+/* Estilos generales para el footer */
+ footer {
+    background-color: #be1622; /* Color de fondo rojo */
+    color: #fff; /* Color del texto blanco */
+    text-align: center; /* Centrar el texto */
+ /* Espaciado arriba y abajo */
+    width: 100%; /* Ocupa todo el ancho de la pantalla */
+    z-index: 0;
+}
+.footer-line {
+    display: inline-block; /* Línea blanca solo del ancho del texto */
+    border-top: 2px solid #fff; /* Línea blanca encima del texto */
+    padding: 10px 0; /* Espaciado arriba y abajo de la línea */
+    font-family: 'Fugaz One', sans-serif;
+    text-align: center;
+}
+
+/* Estilos para pantallas más grandes (monitores) */
+@media (min-width: 600px) {
+    footer {
+        margin-top: 140px;
+        padding-top: 15px;
+        padding-left: 0px;
+        font-size: 18px;
+    }
+    .footer-line {
+        padding: 10px 0;
+        border-top: 2px solid #fff;
+    }
+}
+
+.titulo {
+    background-color: #FFE1DE;
+    text-align: center;
+    
+}

@@ -115,7 +115,24 @@ function validaToken($id, $token, $con)
 
 function activarUsuario($id, $con) {
     $sql = $con->prepare("UPDATE usuarios SET activacion = 1, token = '' WHERE id = ?");
-    return $sql->execute([$id]);
+    if (!$sql->execute([$id])) {
+        return false;
+    }
+    
+    $sqlAuth = $con->prepare("UPDATE auth_users SET is_active = 1, updated_at = NOW() WHERE legacy_usuario_id = ? AND role = 'customer'");
+    $sqlAuth->execute([$id]);
+    return true;
+}
+
+function registraAuthUser(string $usuario, string $email, string $passHash, int $usuarioId, int $clienteId, PDO $con): bool
+{
+    $sql = $con->prepare("
+        INSERT INTO auth_users
+            (uid, username, email_login, password_hash, role, is_active,
+             failed_attempts, legacy_usuario_id, legacy_cliente_id, created_at, updated_at)
+        VALUES (UUID(), ?, ?, ?, 'customer', 0, 0, ?, ?, NOW(), NOW())
+    ");
+    return $sql->execute([$usuario, $email, $passHash, $usuarioId, $clienteId]);
 }
 
 function solicitaPassword($user_id, $con) {
@@ -140,11 +157,28 @@ function verificaTokenRequest($user_id, $token, $con) {
 }
 
 function actualizaPassword($user_id, $password, $con) {
-    $sql = $con->prepare("UPDATE usuarios SET password=?, token_password='', password_request=0 WHERE id= ?");
-    if($sql->execute([$password, $user_id])) {
-        return true;
+    try {
+        $con->beginTransaction();
+
+        $sql = $con->prepare("UPDATE usuarios SET password=?, token_password='', password_request=0 WHERE id= ?");
+        $okLegacy = $sql->execute([$password, $user_id]);
+
+        $sqlAuth = $con->prepare("UPDATE auth_users SET password_hash = ?, updated_at = NOW() WHERE legacy_usuario_id = ? AND role = 'customer'");
+        $okAuth = $sqlAuth->execute([$password, $user_id]);
+
+        if ($okLegacy && $okAuth) {
+            $con->commit();
+            return true;
+        }
+
+        $con->rollBack();
+        return false;
+    } catch (Exception $e) {
+        if ($con->inTransaction()) {
+            $con->rollBack();
+        }
+        return false;
     }
-    return false;
 }
 
 function csrfToken(string $formKey): string
@@ -187,7 +221,7 @@ function validaCsrfToken(string $formKey, ?string $token): bool
 
 function obtenerPerfilCliente(int $clienteId, $con): ?array
 {
-    $sql = $con->prepare("SELECT id, nombres, apellidos, email, telefono, direccion, estatus, fecha_alta, fecha_modifica FROM clientes WHERE id = ? LIMIT 1");
+    $sql = $con->prepare("SELECT c.id, c.nombres, c.apellidos, c.email, c.telefono, c.direccion, c.estatus, c.fecha_alta, c.fecha_modifica, u.usuario FROM clientes c INNER JOIN usuarios u ON u.id_cliente = c.id WHERE c.id = ? LIMIT 1");
     $sql->execute([$clienteId]);
     $row = $sql->fetch(PDO::FETCH_ASSOC);
     return $row ?: null;
@@ -213,10 +247,48 @@ function actualizarPerfilCliente(int $clienteId, array $datos, $con): bool
     ]);
 }
 
-function verificarPasswordActual(int $userId, string $password, $con): bool
+function obtenerAuthUserContext(int $authUserId, int $legacyUserId, int $clienteId, $con): ?array
 {
-    $sql = $con->prepare("SELECT password FROM usuarios WHERE id = ? LIMIT 1");
-    $sql->execute([$userId]);
+    if ($authUserId > 0) {
+        $sql = $con->prepare("SELECT id, legacy_usuario_id, legacy_cliente_id FROM auth_users WHERE id = ? AND role = 'customer' LIMIT 1");
+        $sql->execute([$authUserId]);
+        $row = $sql->fetch(PDO::FETCH_ASSOC);
+        if ($row) {
+            return $row;
+        }
+    }
+
+    if ($legacyUserId > 0) {
+        $sql = $con->prepare("SELECT id, legacy_usuario_id, legacy_cliente_id FROM auth_users WHERE legacy_usuario_id = ? AND role = 'customer' LIMIT 1");
+        $sql->execute([$legacyUserId]);
+        $row = $sql->fetch(PDO::FETCH_ASSOC);
+        if ($row) {
+            return $row;
+        }
+    }
+
+    if ($clienteId > 0) {
+        $sql = $con->prepare("SELECT id, legacy_usuario_id, legacy_cliente_id FROM auth_users WHERE legacy_cliente_id = ? AND role = 'customer' LIMIT 1");
+        $sql->execute([$clienteId]);
+        $row = $sql->fetch(PDO::FETCH_ASSOC);
+        if ($row) {
+            return $row;
+        }
+    }
+
+    return null;
+}
+
+function verificarPasswordActual(int $authUserId, int $legacyUserId, int $clienteId, string $password, $con): bool
+{
+    $sql = $con->prepare("SELECT password_hash FROM auth_users WHERE id = ? AND role = 'customer' LIMIT 1");
+    $context = obtenerAuthUserContext($authUserId, $legacyUserId, $clienteId, $con);
+
+    if (!$context) {
+        return false;
+    }
+
+    $sql->execute([(int) $context['id']]);
     $hash = $sql->fetchColumn();
 
     if (!$hash) {
@@ -226,24 +298,65 @@ function verificarPasswordActual(int $userId, string $password, $con): bool
     return password_verify($password, $hash);
 }
 
-function cambiarPasswordPerfil(int $userId, string $newPasswordHash, $con): bool
-{
-    $sql = $con->prepare("UPDATE usuarios SET password = ?, token_password = '', password_request = 0 WHERE id = ?");
-    return $sql->execute([$newPasswordHash, $userId]);
-}
-
-function desactivarCuentaCliente(int $userId, int $clienteId, $con): bool
+function cambiarPasswordPerfil(int $authUserId, int $legacyUserId, int $clienteId, string $newPasswordHash, $con): bool
 {
     try {
+        $context = obtenerAuthUserContext($authUserId, $legacyUserId, $clienteId, $con);
+        if (!$context) {
+            return false;
+        }
+
+        $con->beginTransaction();
+
+        $sqlAuth = $con->prepare("UPDATE auth_users SET password_hash = ?, updated_at = NOW() WHERE id = ? AND role = 'customer'");
+        $okAuth = $sqlAuth->execute([$newPasswordHash, (int) $context['id']]);
+
+        $okLegacy = true;
+        $legacyId = (int) ($context['legacy_usuario_id'] ?? 0);
+        if ($legacyId > 0) {
+            $sqlLegacy = $con->prepare("UPDATE usuarios SET password = ?, token_password = '', password_request = 0 WHERE id = ?");
+            $okLegacy = $sqlLegacy->execute([$newPasswordHash, $legacyId]);
+        }
+
+        if ($okAuth && $okLegacy) {
+            $con->commit();
+            return true;
+        }
+
+        $con->rollBack();
+        return false;
+    } catch (Exception $e) {
+        if ($con->inTransaction()) {
+            $con->rollBack();
+        }
+        return false;
+    }
+}
+
+function desactivarCuentaCliente(int $authUserId, int $legacyUserId, int $clienteId, $con): bool
+{
+    try {
+        $context = obtenerAuthUserContext($authUserId, $legacyUserId, $clienteId, $con);
+        if (!$context) {
+            return false;
+        }
+
         $con->beginTransaction();
 
         $sqlCliente = $con->prepare("UPDATE clientes SET estatus = 0, fecha_baja = NOW(), fecha_modifica = NOW() WHERE id = ?");
-        $sqlUsuario = $con->prepare("UPDATE usuarios SET activacion = 0 WHERE id = ? AND id_cliente = ?");
+        $sqlAuth = $con->prepare("UPDATE auth_users SET is_active = 0, updated_at = NOW() WHERE id = ? AND role = 'customer'");
+
+        $okLegacy = true;
+        $legacyId = (int) ($context['legacy_usuario_id'] ?? 0);
+        if ($legacyId > 0) {
+            $sqlUsuario = $con->prepare("UPDATE usuarios SET activacion = 0 WHERE id = ? AND id_cliente = ?");
+            $okLegacy = $sqlUsuario->execute([$legacyId, $clienteId]);
+        }
 
         $okCliente = $sqlCliente->execute([$clienteId]);
-        $okUsuario = $sqlUsuario->execute([$userId, $clienteId]);
+        $okAuth = $sqlAuth->execute([(int) $context['id']]);
 
-        if ($okCliente && $okUsuario) {
+        if ($okCliente && $okAuth && $okLegacy) {
             $con->commit();
             return true;
         }

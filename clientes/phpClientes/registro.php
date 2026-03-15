@@ -60,6 +60,9 @@ if(!empty($_POST)){
 
         if ($idUsuario > 0) {
 
+            // Registrar en auth_users como inactivo hasta que se confirme el email.
+            registraAuthUser($usuario, $email, $pass_hash, (int) $idUsuario, (int) $id, $con);
+
             $url = SITE_URL . '/activa_cliente.php?id=' . $idUsuario . '&token='. $token;
             $asunto = "Activar cuenta - JIREH FODS"; 
             $cuerpo = "Estimado $nombres: <br> Para continuar con el proceso de registro es indispensable de click

@@ -14,6 +14,7 @@ requireCustomerAuth([
 $db = new Database();
 $con = $db->conectar();
 
+$authUserId = (int) ($_SESSION['auth_user_id'] ?? 0);
 $userId = (int) $_SESSION['user_id'];
 $clienteId = (int) $_SESSION['user_cliente'];
 $action = $_POST['action'] ?? $_GET['action'] ?? 'obtener';
@@ -108,12 +109,12 @@ if ($action === 'cambiarPassword') {
         exit;
     }
 
-    if (!verificarPasswordActual($userId, $passwordActual, $con)) {
+    if (!verificarPasswordActual($authUserId, $userId, $clienteId, $passwordActual, $con)) {
         echo json_encode(['ok' => false, 'error' => 'Contrasena actual incorrecta']);
         exit;
     }
 
-    $ok = cambiarPasswordPerfil($userId, password_hash($passwordNueva, PASSWORD_DEFAULT), $con);
+    $ok = cambiarPasswordPerfil($authUserId, $userId, $clienteId, password_hash($passwordNueva, PASSWORD_DEFAULT), $con);
     echo json_encode(['ok' => $ok]);
     exit;
 }
@@ -126,12 +127,12 @@ if ($action === 'desactivar') {
         exit;
     }
 
-    if (!verificarPasswordActual($userId, $passwordActual, $con)) {
+    if (!verificarPasswordActual($authUserId, $userId, $clienteId, $passwordActual, $con)) {
         echo json_encode(['ok' => false, 'error' => 'Contrasena actual incorrecta']);
         exit;
     }
 
-    $ok = desactivarCuentaCliente($userId, $clienteId, $con);
+    $ok = desactivarCuentaCliente($authUserId, $userId, $clienteId, $con);
 
     if ($ok) {
         unset($_SESSION['user_id'], $_SESSION['user_name'], $_SESSION['user_cliente']);
