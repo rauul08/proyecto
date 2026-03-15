@@ -43,7 +43,7 @@ $errores = [
         'detalles' => 'Se requieren privilegios de administrador para acceder a este recurso.',
         'acciones' => [
             ['texto' => 'Ir al Inicio', 'url' => 'inicio.php', 'clase' => 'btn-primary'],
-            ['texto' => 'Cerrar Sesión', 'url' => '../phpClientes/logout.php', 'clase' => 'btn-secondary']
+            ['texto' => 'Cerrar Sesión', 'url' => 'logout.php', 'clase' => 'btn-secondary']
         ]
     ],
     'base_datos' => [

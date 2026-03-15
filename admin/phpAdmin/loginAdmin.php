@@ -2,6 +2,7 @@
 
 require '../config/database.php';
 require '../clases/adminFunciones.php';
+require '../../shared/AuthService.php';
 
 $db = new Database();
 $con = $db->conectar();
@@ -23,8 +24,19 @@ if(!empty($_POST)) {
     }
 
     if(count($errors) == 0) {
-        $errors[] = login($usuario, $password, $con);
+        $auth = authenticateUnified($usuario, $password, $con, [
+            'allow_roles' => ['admin'],
+            'redirects' => [
+                'admin' => 'inicio.php'
+            ]
+        ]);
 
+        if (!empty($auth['ok'])) {
+            header('Location: ' . $auth['redirect']);
+            exit;
+        }
+
+        $errors[] = $auth['error'] ?? 'Error al iniciar sesion.';
     }
 
 }
@@ -69,7 +81,7 @@ if(!empty($_POST)) {
                                             <?php mostrarMensajes($errors); ?>
 
                                             <div class="d-flex align-items-center justify-content-between mt-4 mb-0">
-                                                <a class="small" href="password.html">Olvidó su contraseña?</a>
+                                                <div class="small text-muted">Contacte al soporte técnico si olvidó su contraseña</div>
                                                 <button type="submit" class="btn btn-primary">Ingresar</button>
                                             </div>
                                         </form>

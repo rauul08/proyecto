@@ -1,5 +1,10 @@
 <?php
 require '../config/database.php';
+require_once '../../shared/AuthGuards.php';
+requireAdminAuth([
+    'response_mode' => 'json',
+    'redirect' => '../phpAdmin/loginAdmin.php'
+]);
 
 if (isset($_POST['id']) && isset($_POST['proceso'])) {
     $id = $_POST['id'];

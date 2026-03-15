@@ -3,14 +3,13 @@
 require '../config/config.php';
 require '../config/database.php';
 require 'clienteFunciones.php';
+require_once '../../shared/AuthGuards.php';
 
 header('Content-Type: application/json');
-
-if (!isset($_SESSION['user_id'], $_SESSION['user_cliente'])) {
-    http_response_code(401);
-    echo json_encode(['ok' => false, 'error' => 'No autenticado']);
-    exit;
-}
+requireCustomerAuth([
+    'response_mode' => 'json',
+    'redirect' => '../phpClientes/login.php'
+]);
 
 $db = new Database();
 $con = $db->conectar();

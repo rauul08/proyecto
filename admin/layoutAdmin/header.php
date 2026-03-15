@@ -1,3 +1,8 @@
+<?php
+require_once '../../shared/AuthGuards.php';
+requireAdminAuth();
+$adminNombre = $_SESSION['user_name'] ?? 'Administrador';
+?>
 <!DOCTYPE html>
 <html lang="es">
     <head>
@@ -35,7 +40,10 @@
             <a class="navbar-brand ps-3" href="../phpAdmin/inicio.php">JIREH FOODS | Admin</a>
             <!-- Sidebar Toggle-->
             <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
-            <!-- Navbar Search-->
+            <!-- <div class="ms-auto d-flex align-items-center gap-3 pe-3">
+                <a class="btn btn-sm btn-outline-light" href="../../clientes/phpClientes/index.php">Ir al e-commerce</a>
+                <a class="btn btn-sm btn-light" href="../phpAdmin/logout.php">Cerrar sesion</a>
+            </div> -->
           
         </nav>
         <div id="layoutSidenav">
@@ -76,7 +84,11 @@
                     </div>
                     <div class="sb-sidenav-footer" style="background-color:#FFE1DE;">
                         <div class="small" style="color:black;">Conectado como: <br>
-                        Administrador </div>
+                        <?php echo htmlspecialchars($adminNombre, ENT_QUOTES, 'UTF-8'); ?> </div>
+                        <div class="pt-2 d-grid gap-2">
+                            <!-- <a class="btn btn-sm btn-outline-secondary" href="../../clientes/phpClientes/index.php">E-commerce</a> -->
+                            <a class="btn btn-sm btn-outline-danger" href="../phpAdmin/logout.php">Cerrar sesion</a>
+                        </div>
                     </div>
                 </nav>
             </div>

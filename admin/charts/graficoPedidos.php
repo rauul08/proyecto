@@ -1,5 +1,7 @@
 <?php
 require '../config/database.php';
+require_once '../../shared/AuthGuards.php';
+requireAdminAuth(['redirect' => '../phpAdmin/loginAdmin.php']);
 
 // Crear una instancia de la clase Database
 $db = new Database();
@@ -135,8 +137,10 @@ $conexion = $db->conectar();
                         </div>
                     </div>
                     <div class="sb-sidenav-footer" style="background-color:#FFE1DE;">
-                        <div class="small" style="color:black;">Conectado como: <br>
-                        Administrador </div>
+                        <div class="pt-2 d-grid gap-2">
+                            <!-- <a class="btn btn-sm btn-outline-secondary" href="../../clientes/phpClientes/index.php">E-commerce</a> -->
+                            <a class="btn btn-sm btn-outline-danger" href="../phpAdmin/logout.php">Cerrar sesion</a>
+                        </div>
                     </div>
                 </nav>
             </div>

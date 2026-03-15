@@ -1,5 +1,10 @@
 <?php
 require '../config/database.php';
+require_once '../../shared/AuthGuards.php';
+requireAdminAuth([
+    'response_mode' => 'json',
+    'redirect' => '../phpAdmin/loginAdmin.php'
+]);
 
 // Mostrar errores de PHP para depuración
 ini_set('display_errors', 1);

@@ -3,6 +3,7 @@
 require '../config/config.php';
 require '../config/database.php';
 require '../clases/clienteFunciones.php';
+require '../../shared/AuthService.php';
 $db = new Database();
 $con = $db->conectar();
 
@@ -39,7 +40,21 @@ if(!empty($_POST)){
     }
 
     if(count($errors) == 0) {
-        $loginError = login($usuario, $password, $con);
+        $auth = authenticateUnified($usuario, $password, $con, [
+            'allow_roles' => ['admin', 'customer'],
+            'redirects' => [
+                'admin' => '../../admin/phpAdmin/inicio.php',
+                'customer' => 'index.php'
+            ]
+        ]);
+
+        if (!empty($auth['ok'])) {
+            unset($_SESSION['login_attempts'], $_SESSION['login_lock_until']);
+            header('Location: ' . $auth['redirect']);
+            exit;
+        }
+
+        $loginError = $auth['error'] ?? 'Error al iniciar sesion.';
         if (!empty($loginError)) {
             $_SESSION['login_attempts'] = (int) $_SESSION['login_attempts'] + 1;
 

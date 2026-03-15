@@ -1,5 +1,10 @@
 <?php
 require '../config/database.php';
+require_once '../../shared/AuthGuards.php';
+requireAdminAuth([
+    'response_mode' => 'json',
+    'redirect' => '../phpAdmin/loginAdmin.php'
+]);
 
 header('Content-Type: application/json');
 

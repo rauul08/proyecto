@@ -118,38 +118,6 @@ function activarUsuario($id, $con) {
     return $sql->execute([$id]);
 }
 
-
-function login($usuario, $password, $con) {
-    $sql = $con->prepare("SELECT id, usuario, password, id_cliente FROM usuarios WHERE usuario LIKE ? LIMIT 1");
-    $sql->execute([$usuario]);
-    if($row = $sql->fetch(PDO::FETCH_ASSOC)){
-    if(esActivo($usuario, $con)) {
-    if(password_verify($password, $row['password'])) {
-        session_regenerate_id(true);
-        unset($_SESSION['login_attempts'], $_SESSION['login_lock_until']);
-        $_SESSION['user_id'] = $row['id'];
-        $_SESSION['user_name'] = $row['usuario'];
-        $_SESSION['user_cliente'] = $row['id_cliente'];
-        header("Location: index.php");
-        exit;
-     } 
-   } else {
-    return 'El usuario no ha sido activado.';
-   }
- }
- return 'El usuario y/o contraseña son incorrectos.';
-}
-
-function esActivo($usuario, $con) {
-    $sql = $con->prepare("SELECT u.activacion, c.estatus FROM usuarios u INNER JOIN clientes c ON u.id_cliente = c.id WHERE u.usuario LIKE ? LIMIT 1");
-    $sql->execute([$usuario]);
-    $row = $sql->fetch(PDO::FETCH_ASSOC);
-    if ($row && (int) $row['activacion'] === 1 && (int) $row['estatus'] === 1) {
-        return true;
-    }
-    return false;
-}
-
 function solicitaPassword($user_id, $con) {
 
     $token = generarToken();

@@ -1,6 +1,8 @@
 <?php
 require '../config/config.php';
 require '../config/database.php';
+require_once '../../shared/AuthGuards.php';
+requireCustomerAuth(['redirect' => 'login.php']);
 $db = new Database();
 $con = $db->conectar();
 
