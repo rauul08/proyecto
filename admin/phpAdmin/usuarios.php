@@ -13,11 +13,16 @@ $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 <div class="card">
     <div class="card-body">
+        <div class="d-flex justify-content-end mb-3">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#crearUsuarioModal">
+                <i class="fa-solid fa-user-plus"></i> Crear usuario
+            </button>
+        </div>
         <div class="table-responsive">
             <table class="table table-bordered table-striped table-hover" style="width: 100%;" id="tblUsuarios">
                 <thead>
                     <tr>
-                        <th>#</th>
+                        <!-- <th>#</th> -->
                         <th>Nombres</th>
                         <th>Apellidos</th>
                         <th>Correo Electrónico</th>
@@ -45,7 +50,7 @@ $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         $registro_pedidos = $row['registro_pedidos'];
                 ?>
                 <tr data-id="<?php echo $id; ?>">
-                    <td><?php echo $id; ?></td>
+                    <!-- <td><?php echo $id; ?></td> -->
                     <td><?php echo $nombres; ?></td>
                     <td><?php echo $apellidos; ?></td>
                     <td><?php echo $email; ?></td>
@@ -150,10 +155,136 @@ $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </div>
 </div>
 
+<!-- Modal Crear Usuario -->
+<div class="modal fade" id="crearUsuarioModal" tabindex="-1" aria-labelledby="crearUsuarioModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="crearUsuarioModalLabel">Crear Usuario</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formCrearUsuario" autocomplete="off">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label for="crear-rol" class="form-label">Rol</label>
+                            <select class="form-select" id="crear-rol" name="rol" required>
+                                <option value="customer" selected>Cliente</option>
+                                <option value="admin">Administrador</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="crear-usuario" class="form-label">Usuario</label>
+                            <input type="text" class="form-control" id="crear-usuario" name="usuario" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="crear-email" class="form-label">Correo electronico</label>
+                            <input type="email" class="form-control" id="crear-email" name="email" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="crear-password" class="form-label">Contraseña</label>
+                            <input type="password" class="form-control" id="crear-password" name="password" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="crear-repassword" class="form-label">Confirmar contraseña</label>
+                            <input type="password" class="form-control" id="crear-repassword" name="repassword" required>
+                        </div>
+                    </div>
+
+                    <div id="camposCliente" class="row g-3 mt-1">
+                        <div class="col-md-6">
+                            <label for="crear-nombres" class="form-label">Nombres</label>
+                            <input type="text" class="form-control" id="crear-nombres" name="nombres">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="crear-apellidos" class="form-label">Apellidos</label>
+                            <input type="text" class="form-control" id="crear-apellidos" name="apellidos">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="crear-telefono" class="form-label">Telefono</label>
+                            <input type="text" class="form-control" id="crear-telefono" name="telefono">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="crear-direccion" class="form-label">Direccion</label>
+                            <input type="text" class="form-control" id="crear-direccion" name="direccion">
+                        </div>
+                    </div>
+
+                    <div id="camposAdmin" class="row g-3 mt-1 d-none">
+                        <div class="col-md-6">
+                            <label for="crear-nombre-admin" class="form-label">Nombre para administrador (opcional)</label>
+                            <input type="text" class="form-control" id="crear-nombre-admin" name="nombre_admin">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button id="btn-crear-usuario" type="button" class="btn btn-primary">Crear y enviar activacion</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <?php include_once '../layoutAdmin/footer.php'; ?>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+    // Funcionalidad del Modal de Creacion
+    var crearUsuarioModal = document.getElementById('crearUsuarioModal');
+    var formCrearUsuario = document.getElementById('formCrearUsuario');
+    var btnCrearUsuario = document.getElementById('btn-crear-usuario');
+    var rolSelect = document.getElementById('crear-rol');
+    var camposCliente = document.getElementById('camposCliente');
+    var camposAdmin = document.getElementById('camposAdmin');
+
+    function actualizarCamposPorRol() {
+        var esCliente = rolSelect.value === 'customer';
+        camposCliente.classList.toggle('d-none', !esCliente);
+        camposAdmin.classList.toggle('d-none', esCliente);
+
+        document.getElementById('crear-nombres').required = esCliente;
+        document.getElementById('crear-apellidos').required = esCliente;
+        document.getElementById('crear-telefono').required = esCliente;
+        document.getElementById('crear-direccion').required = esCliente;
+    }
+
+    if (crearUsuarioModal && formCrearUsuario && btnCrearUsuario && rolSelect) {
+        rolSelect.addEventListener('change', actualizarCamposPorRol);
+        actualizarCamposPorRol();
+
+        crearUsuarioModal.addEventListener('hidden.bs.modal', function() {
+            formCrearUsuario.reset();
+            actualizarCamposPorRol();
+        });
+
+        btnCrearUsuario.addEventListener('click', async function() {
+            try {
+                if (!formCrearUsuario.checkValidity()) {
+                    formCrearUsuario.reportValidity();
+                    return;
+                }
+
+                const response = await fetch('../clases/crearUsuarioAdmin.php', {
+                    method: 'POST',
+                    body: new FormData(formCrearUsuario)
+                });
+                const data = await response.json();
+
+                if (data.ok) {
+                    alert(data.message || 'Usuario creado correctamente.');
+                    window.location.reload();
+                } else {
+                    alert(data.error || 'No fue posible crear el usuario.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error inesperado al crear usuario.');
+            }
+        });
+    }
+
     // Funcionalidad del Modal de Edición
     var editarModal = document.getElementById('editarModal');
     var btnGuardar = document.getElementById('btn-guardar');

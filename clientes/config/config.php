@@ -15,7 +15,9 @@ define("SITE_URL", env("SITE_URL", "http://localhost/proyecto/clientes/phpClient
 define("KEY_TOKEN", env("KEY_TOKEN", "Jireh-Port08"));
 define("MONEDA", env("MONEDA", "$") ?: "$");
 
-session_start();
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
 
 $num_cart = 0;
 if(isset($_SESSION['compras']['productos'])){

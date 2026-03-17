@@ -37,7 +37,7 @@ function generarToken()
 function registraCliente(array $datos, $con) 
 {
 
-    $sql = $con->prepare("INSERT INTO clientes (nombres, apellidos, email, telefono, direccion, estatus, fecha_alta) VALUES (?,?,?,?,?, 1, 
+    $sql = $con->prepare("INSERT INTO clientes (uid, nombres, apellidos, email, telefono, direccion, estatus, fecha_alta) VALUES (UUID(),?,?,?,?,?, 1, 
     now())");
     if ($sql->execute($datos)) {
         return $con->lastInsertId();
