@@ -1,6 +1,6 @@
 <?php
 require_once '../../shared/AuthGuards.php';
-requireAdminAuth();
+requireRole('admin', ['response_mode' => 'redirect', 'redirect' => '../phpAdmin/loginAdmin.php']);
 $adminNombre = $_SESSION['user_name'] ?? 'Administrador';
 ?>
 <!DOCTYPE html>
@@ -44,7 +44,7 @@ $adminNombre = $_SESSION['user_name'] ?? 'Administrador';
                 <a class="btn btn-sm btn-outline-light" href="../../clientes/phpClientes/index.php">Ir al e-commerce</a>
                 <a class="btn btn-sm btn-light" href="../phpAdmin/logout.php">Cerrar sesion</a>
             </div> -->
-          
+
         </nav>
         <div id="layoutSidenav">
             <div id="layoutSidenav_nav">

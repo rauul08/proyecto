@@ -1,12 +1,17 @@
 <?php
 require '../config/database.php';
 require_once '../../shared/AuthGuards.php';
-requireAdminAuth([
-    'response_mode' => 'json',
-    'redirect' => '../phpAdmin/loginAdmin.php'
-]);
+requireAdminAjaxAuth();
 
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=UTF-8');
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    sendJsonError('Método no permitido', 'METHOD_NOT_ALLOWED', 405);
+}
+
+if (!isset($_POST['action'])) {
+    sendJsonError('Acción no especificada', 'MISSING_ACTION', 400);
+}
 
 $response = ['ok' => false];
 

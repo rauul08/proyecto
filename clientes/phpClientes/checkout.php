@@ -2,7 +2,7 @@
 require '../config/config.php';
 require '../config/database.php';
 require_once '../../shared/AuthGuards.php';
-requireCustomerAuth(['redirect' => 'login.php']);
+requireRoutePermission('clientes/phpClientes/checkout.php', ['redirect' => 'login.php']);
 $db = new Database();
 $con = $db->conectar();
 
@@ -193,10 +193,10 @@ if ($paquetes != null) {
             <div id="subtotal_<?php echo $tipo ?><?php echo $_id; ?>" name="subtotal[]"><?php echo MONEDA . number_format($subtotal,2,'.',','); ?></div>
         </td>
         <td>
-    <a href="#" id="delete" class="btn btn-warning btn-sm" 
-       data-bs-id="<?php echo $_id; ?>" 
-       data-bs-tipo="<?php echo $tipo; ?>" 
-       data-bs-toggle="modal" 
+    <a href="#" id="delete" class="btn btn-warning btn-sm"
+       data-bs-id="<?php echo $_id; ?>"
+       data-bs-tipo="<?php echo $tipo; ?>"
+       data-bs-toggle="modal"
        data-bs-target="#eliminaModal">
         <i class="fas fa-trash"></i>
     </a>
@@ -216,7 +216,7 @@ if ($paquetes != null) {
         </table>
     </div>
 
-    
+
 <?php if (!empty($lista_pedidos)) { ?>
     <div class="row">
         <div class="col-md-5 offset-md-7 d-grid gap-2">
@@ -224,7 +224,7 @@ if ($paquetes != null) {
                 <a href="proceso_pago.php" class="btn btn-primary btn-lg">Realizar pago</a>
             <?php } else { ?>
                 <a href="login.php" class="btn btn-primary btn-lg">Realizar pago</a>
-            <?php } ?> 
+            <?php } ?>
         </div>
     </div>
 <?php } ?>

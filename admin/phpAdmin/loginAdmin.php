@@ -1,8 +1,9 @@
-<?php 
+<?php
 
 require '../config/database.php';
 require '../clases/adminFunciones.php';
 require '../../shared/AuthService.php';
+require '../../clientes/clases/clienteFunciones.php';
 
 $db = new Database();
 $con = $db->conectar();
@@ -13,9 +14,13 @@ VALUES ('admin','$password','Administrador','jiireh.bussines@gmail.com','1',NOW(
 $con->query($sql);*/
 
 $errors = [];
-
+$csrfFormKey = 'login_admin_form';
 
 if(!empty($_POST)) {
+    if (!validaCsrfToken($csrfFormKey, $_POST['csrf_token'] ?? null)) {
+        $errors[] = 'Token de seguridad inválido. Recarga la página e intenta de nuevo.';
+    }
+
     $usuario = trim($_POST['usuario']);
     $password = trim($_POST['password']);
 
@@ -74,10 +79,11 @@ if(!empty($_POST)) {
                                                 <label for="usuario">Usuario</label>
                                             </div>
                                             <div class="form-floating mb-3">
-                                                <input class="form-control" id="password" name="password" type="password" 
+                                                <input class="form-control" id="password" name="password" type="password"
                                                 placeholder="Contraseña" required />
                                                 <label for="password">Contraseña</label>
                                             </div>
+                                            <?php echo csrfInput($csrfFormKey); ?>
                                             <?php mostrarMensajes($errors); ?>
 
                                             <div class="d-flex align-items-center justify-content-between mt-4 mb-0">
@@ -86,7 +92,7 @@ if(!empty($_POST)) {
                                             </div>
                                         </form>
                                     </div>
-      
+
                                 </div>
                             </div>
                         </div>

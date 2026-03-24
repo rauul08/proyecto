@@ -2,7 +2,7 @@
 require '../config/config.php';
 require '../config/database.php';
 require_once '../../shared/AuthGuards.php';
-requireCustomerAuth(['redirect' => 'login.php']);
+requireRoutePermission('clientes/phpClientes/proceso_pago.php', ['redirect' => 'login.php']);
 $db = new Database();
 $con = $db->conectar();
 
@@ -18,7 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $direccion_entrega = trim($_POST['direccion_entrega']);
     $instrucciones_adicionales = trim($_POST['instrucciones_adicionales']);
     $metodo_pago = trim($_POST['payment_method']);
-    
+
     // Inicializar el coste de envío
     $coste_envio = 0;
 
@@ -29,11 +29,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         'medellin y madero',
         'las rosas',
         'km. 15'
-    ]; 
-    
+    ];
+
     // Convertir la dirección ingresada a minúsculas
     $direccion_entrega_lower = strtolower($direccion_entrega);
-    
+
     // Validación de la dirección de entrega
     if (in_array($direccion_entrega_lower, $direcciones_permitidas)) {
         // La dirección está en la lista de permitidas
@@ -58,7 +58,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Preparar la consulta de inserción
     $sql = "INSERT INTO pedidos (nombre, email, direccion_entrega, instrucciones_adicionales, metodo_pago, monto_total, coste_envio, proceso) VALUES (:nombre, :email, :direccion_entrega, :instrucciones_adicionales, :metodo_pago, :monto_total, :coste_envio, 1)";
     $stmt = $con->prepare($sql);
-    
+
     // Asignar los valores a los parámetros
     $stmt->bindParam(':nombre', $nombre);
     $stmt->bindParam(':email', $email);
@@ -125,13 +125,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="index, follow">
     <meta name="theme-color" content="#09f">
-    <link rel="stylesheet" href="../css/inicio.css">    
+    <link rel="stylesheet" href="../css/inicio.css">
     <link rel="icon" type="image/jpeg" href="../images/jLeft.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fugaz+One&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <meta property="og:title" content="Tienda de comida rápida">
-    <meta property="og:description" content="Tienda en línea de la empresa de comida rápida JIREH">  
+    <meta property="og:description" content="Tienda en línea de la empresa de comida rápida JIREH">
 </head>
 <body>
 <div class="container">
@@ -319,7 +319,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         inputs.forEach(input => {
             if (!input.value) {
                 allFilled = false;
-                input.classList.add('is-invalid'); 
+                input.classList.add('is-invalid');
             } else {
                 input.classList.remove('is-invalid');
             }

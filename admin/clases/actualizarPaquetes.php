@@ -1,15 +1,22 @@
 <?php
 require '../config/database.php';
 require_once '../../shared/AuthGuards.php';
-requireAdminAuth([
-    'response_mode' => 'json',
-    'redirect' => '../phpAdmin/loginAdmin.php'
-]);
+requireAdminAjaxAuth();
+
+header('Content-Type: application/json; charset=UTF-8');
 
 // Mostrar errores de PHP para depuración
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    sendJsonError('Método no permitido', 'METHOD_NOT_ALLOWED', 405);
+}
+
+if (!isset($_POST['action'])) {
+    sendJsonError('Acción no especificada', 'MISSING_ACTION', 400);
+}
 
 if (isset($_POST['action'])) {
     $action = $_POST['action'];

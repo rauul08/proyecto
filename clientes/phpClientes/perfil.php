@@ -1,7 +1,7 @@
 <?php
 require '../config/config.php';
 require_once '../../shared/AuthGuards.php';
-requireCustomerAuth(['redirect' => 'login.php']);
+requireRoutePermission('clientes/phpClientes/perfil.php', ['redirect' => 'login.php']);
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -24,7 +24,7 @@ requireCustomerAuth(['redirect' => 'login.php']);
         color: #8B4513;
         font-family: 'Arial', sans-serif;
         }
-        
+
         .nav-underline .nav-item .nav-link:hover,
         .nav-underline .nav-item .nav-link.active {
             border-bottom: 2px solid #FFD700;

@@ -2,7 +2,7 @@
 require '../config/config.php';
 require '../config/database.php';
 require_once '../../shared/AuthGuards.php';
-requireCustomerAuth(['redirect' => 'login.php']);
+requireRoutePermission('clientes/phpClientes/checkout_paquetes.php', ['redirect' => 'login.php']);
 $db = new Database();
 $con = $db->conectar();
 
@@ -115,7 +115,7 @@ if($paquetes != null){
     </style>
 </head>
 <body>
-<div id="conteiner"> 
+<div id="conteiner">
         <header class="d-flex justify-content-between align-items-flex-start" >
      <a class="navbar-brand" href="promociones.php" class="return"><svg  xmlns="http://www.w3.org/2000/svg"  width="60"  height="50"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-arrow-left"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l14 0" /><path d="M5 12l6 6" /><path d="M5 12l6 -6" /></svg></a>
         <ul class="nav nav-underline align-items-flex-start">
@@ -133,7 +133,7 @@ if($paquetes != null){
                     <a href="logout.php">Cerrar sesión</a>
                 </div>
             </div>
-        
+
             <?php } else { ?>
                 <a class="nav-link" href="login.php"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304H178.3z"/></svg>
                 Ingresar</a>
@@ -193,8 +193,8 @@ if($paquetes != null){
             <?php } ?>
                     </table>
     </div>
-    
-    
+
+
     <?php if (!empty($order_list)) { ?>
         <div class="row">
             <div class="col-md-5 offset-md-7 d-grid gap-2">
@@ -202,7 +202,7 @@ if($paquetes != null){
                     <a href="proceso_pago.php" class="btn btn-primary btn-lg">Realizar pago</a>
                 <?php } else { ?>
                     <a href="login.php" class="btn btn-primary btn-lg">Realizar pago</a>
-                <?php } ?> 
+                <?php } ?>
             </div>
         </div>
     <?php } ?>
@@ -251,7 +251,7 @@ if($paquetes != null){
             }).then(response => response.json())
             .then(data => {
                 if(data.ok){
-                    let divsub = document.getElementById('sub_' + id) 
+                    let divsub = document.getElementById('sub_' + id)
                     divsub.innerHTML = data.sub
 
                     let totale = 0.00
@@ -278,7 +278,7 @@ if($paquetes != null){
             let formData = new FormData()
             formData.append('id', id)
             formData.append('action', 'eliminar')
-            
+
 
             fetch(url, {
                 method: 'POST',
@@ -294,6 +294,6 @@ if($paquetes != null){
 
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    
+
 </body>
 </html>

@@ -5,11 +5,8 @@ require '../config/database.php';
 require 'clienteFunciones.php';
 require_once '../../shared/AuthGuards.php';
 
-header('Content-Type: application/json');
-requireCustomerAuth([
-    'response_mode' => 'json',
-    'redirect' => '../phpClientes/login.php'
-]);
+header('Content-Type: application/json; charset=UTF-8');
+requireCustomerAjaxAuth();
 
 $db = new Database();
 $con = $db->conectar();

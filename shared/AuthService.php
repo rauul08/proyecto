@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/SessionManager.php';
+
 function ensureSessionStarted(): void
 {
     if (session_status() !== PHP_SESSION_ACTIVE) {
@@ -127,4 +129,131 @@ function authenticateUnified(string $usuario, string $password, PDO $con, array 
         'ok' => false,
         'error' => 'El usuario y/o contrasena son incorrectos.'
     ];
+}
+
+/**
+ * Registra una nueva sesión en el gestor de sesiones múltiples.
+ * DEBE llamarse inmediatamente después de una autenticación exitosa.
+ *
+ * @param string $authUserId ID del usuario (desde $_SESSION['auth_user_id'])
+ * @param PDO $con Conexión a la BD
+ * @param bool $enforceLimit Si true, cierra sesiones antiguas si se excede el límite
+ * @return array ['ok' => bool, 'session_id' => string, ...]
+ */
+function registerUserSession(string $authUserId, PDO $con, bool $enforceLimit = true): array
+{
+    ensureSessionStarted();
+
+    try {
+        $sessionManager = new SessionManager($con);
+        $sessionId = session_id();
+        $ipAddress = getClientIpAddress();
+        $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
+
+        if ($enforceLimit) {
+            $result = $sessionManager->createSessionWithLimit($authUserId, $sessionId, $ipAddress, $userAgent);
+        } else {
+            $result = [
+                'ok' => $sessionManager->createSession($authUserId, $sessionId, $ipAddress, $userAgent),
+                'session_id' => $sessionId,
+                'closed_sessions' => 0
+            ];
+        }
+
+        return $result;
+    } catch (Throwable $e) {
+        error_log("registerUserSession - Error: " . $e->getMessage());
+        return [
+            'ok' => false,
+            'error' => 'No se pudo registrar la sesión: ' . $e->getMessage()
+        ];
+    }
+}
+
+/**
+ * Obtiene la dirección IP del cliente
+ *
+ * @return string IP address
+ */
+function getClientIpAddress(): string
+{
+    // Verificar si usa proxy
+    if (!empty($_SERVER['HTTP_CF_CONNECTING_IP'])) {
+        return $_SERVER['HTTP_CF_CONNECTING_IP']; // Cloudflare
+    }
+    if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        $ips = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+        return trim($ips[0]);
+    }
+    if (!empty($_SERVER['HTTP_X_FORWARDED'])) {
+        return $_SERVER['HTTP_X_FORWARDED'];
+    }
+    if (!empty($_SERVER['HTTP_FORWARDED_FOR'])) {
+        return $_SERVER['HTTP_FORWARDED_FOR'];
+    }
+    if (!empty($_SERVER['HTTP_FORWARDED'])) {
+        return $_SERVER['HTTP_FORWARDED'];
+    }
+
+    return $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+}
+
+/**
+ * Obtiene el SessionManager (útil en endpoints).
+ *
+ * @param PDO $con Conexión a la BD
+ * @return SessionManager
+ */
+function getSessionManager(PDO $con): SessionManager
+{
+    return new SessionManager($con);
+}
+
+/**
+ * Cierra la sesión actual y registra en el gestor.
+ *
+ * @param PDO $con Conexión a la BD
+ * @param string|null $reason Motivo del logout
+ * @return bool
+ */
+function logoutCurrentSession(PDO $con, ?string $reason = null): bool
+{
+    ensureSessionStarted();
+
+    try {
+        $sessionId = session_id();
+        $sessionManager = new SessionManager($con);
+
+        $result = $sessionManager->closeSession($sessionId, $reason ?? 'logout');
+
+        // Destruir sesión PHP
+        $_SESSION = [];
+        session_destroy();
+
+        return $result;
+    } catch (Throwable $e) {
+        error_log("logoutCurrentSession - Error: " . $e->getMessage());
+        return false;
+    }
+}
+
+/**
+ * Actualiza la última actividad de la sesión actual.
+ * DEBE llamarse en cada request autenticado para evitar timeout.
+ *
+ * @param PDO $con Conexión a la BD
+ * @return bool
+ */
+function updateSessionActivity(PDO $con): bool
+{
+    ensureSessionStarted();
+
+    try {
+        $sessionId = session_id();
+        $sessionManager = new SessionManager($con);
+        return $sessionManager->updateLastActivity($sessionId);
+    } catch (Throwable $e) {
+        error_log("updateSessionActivity - Error: " . $e->getMessage());
+        return false;
+    }
 }
